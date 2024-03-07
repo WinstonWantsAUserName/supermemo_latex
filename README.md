@@ -1,8 +1,6 @@
 # supermemo_latex
  LaTeX script for SuperMemo
 
-If you have AutoHotkey installed in your computer, use the `.ahk`. If not, use the `.exe`.
-
 Select the formula and press `Ctrl + Alt + L` to convert to image, and image to formula. Images are stored locally. Local images will be deleted when converted back to formula.
 
 Add the following to `supermemo.css` to hide the timestamp:
