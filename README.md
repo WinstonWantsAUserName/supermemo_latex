@@ -12,3 +12,5 @@ Add the following to `supermemo.css` to hide the timestamp:
   top: -9999px;
 }
 ```
+
+You can support me here: https://www.buymeacoffee.com/winstonwolf
