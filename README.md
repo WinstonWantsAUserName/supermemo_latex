@@ -2,7 +2,7 @@
 
 LaTeX script for SuperMemo.
 
-How to use it: 1) install AutoHotkey, 2) luanch supermemo_latex.ahk
+How to use it: 1) install AutoHotkey; 2) launch `supermemo_latex.ahk`.
 
 Select the formula and press `Ctrl + Alt + L` to convert to image, and image to formula. Images are stored locally. Local images will be deleted when converted back to formula.
 
