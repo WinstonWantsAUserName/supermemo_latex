@@ -16,4 +16,4 @@ Add the following to `bin/supermemo.css` to hide the timestamp:
 }
 ```
 
-You can support me here: https://www.buymeacoffee.com/winstonwolf
+You can support me here: https://www.buymeacoffee.com/winstonwolf or https://www.paypal.com/paypalme/winstonwolfie
