@@ -48,7 +48,7 @@ SM := new SM()
     SM.WaitHTMLFocus()
     HTML := FileRead(HTMLPath := SM.LoopForFilePath(false))
     HTML := StrReplace(HTML, LatexPlaceHolder)
-    
+
     /*
       Recommended css setting for anti-merge class:
       .anti-merge {
@@ -57,14 +57,17 @@ SM := new SM()
         top: -9999px;
       }
     */
-    
+
     AntiMerge := "<SPAN class=anti-merge>Last LaTeX to image conversion at " . CurrTimeDisplay . "</SPAN>"
     HTML := RegExReplace(HTML, "<SPAN class=anti-merge>Last LaTeX to image conversion at .*?(<\/SPAN>|$)", AntiMerge, v)
     if (!v)
       HTML .= "`n" . AntiMerge
     SM.EmptyHTMLComp()
     WinWaitActive, ahk_class TElWind
+    SM.WaitTextFocus()
+    x := A_CaretX, y := A_CaretY
     Send ^{Home}
+    WaitCaretMove(x, y, 700)
     Clip(HTML,, false, "sm")
     if (ContLearn == 1) {  ; item and "Show answer"
       Send {Esc}
@@ -75,7 +78,7 @@ SM := new SM()
       WinWaitActive, ahk_class TElWind
       Send ^+{f7}  ; clear read point
     }
-    Vim.State.SetMode("Vim_Normal")
+
   } else {  ; image
     Send {BS}  ; otherwise might contain unwanted format
     RegExMatch(data, "alt=""(.*?)""", v)
@@ -90,7 +93,6 @@ SM := new SM()
     LatexFormula := StrReplace(LatexFormula, "&amp;", "&")
     Clip(LatexFormula, true, false)
     FileDelete % LatexPath
-    Vim.State.SetMode("Vim_Visual")
   }
   Clipboard := ClipSaved
 return
