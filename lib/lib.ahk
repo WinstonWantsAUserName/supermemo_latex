@@ -21,7 +21,7 @@
 ; https://github.com/Paris/AutoHotkey-Scripts/blob/master/Functions.ahk
 IfBetween(ByRef var, LowerBound, UpperBound, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var between %LowerBound% and %UpperBound%
     ret := true
   StringCaseSense % SCS
@@ -29,7 +29,7 @@ IfBetween(ByRef var, LowerBound, UpperBound, StrCaseSense:=false) {
 }
 IfNotBetween(ByRef var, LowerBound, UpperBound, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var not between %LowerBound% and %UpperBound%
     ret := true
   StringCaseSense % SCS
@@ -37,7 +37,7 @@ IfNotBetween(ByRef var, LowerBound, UpperBound, StrCaseSense:=false) {
 }
 IfIn(ByRef var, MatchList, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var in %MatchList%
     ret := true
   StringCaseSense % SCS
@@ -45,7 +45,7 @@ IfIn(ByRef var, MatchList, StrCaseSense:=false) {
 }
 IfNotIn(ByRef var, MatchList, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var not in %MatchList%
     ret := true
   StringCaseSense % SCS
@@ -53,7 +53,7 @@ IfNotIn(ByRef var, MatchList, StrCaseSense:=false) {
 }
 IfContains(ByRef var, MatchList, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var contains %MatchList%
     ret := true
   StringCaseSense % SCS
@@ -61,7 +61,7 @@ IfContains(ByRef var, MatchList, StrCaseSense:=false) {
 }
 IfNotContains(ByRef var, MatchList, StrCaseSense:=false) {
   SCS := A_StringCaseSense
-  StringCaseSense % StrCaseSense ? "on" : "off"
+  StringCaseSense % StrCaseSense ? "On" : "Off"
   If var not contains %MatchList%
     ret := true
   StringCaseSense % SCS
@@ -314,7 +314,7 @@ WinTextWaitExist(WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", T
   }
 }
 
-ControlTextWaitExist(Control, WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
+ControlTextWaitExist(Control:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
   StartTime := A_TickCount
   Loop {
     if (ControlGetText(Control, WinTitle, WinText, ExcludeTitle, ExcludeText)) {
@@ -325,7 +325,7 @@ ControlTextWaitExist(Control, WinTitle:="", WinText:="", ExcludeTitle:="", Exclu
   }
 }
 
-ControlTextWait(Control, Text, WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
+ControlTextWait(Control:="", Text:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
   StartTime := A_TickCount
   Loop {
     if (ControlGetText(Control, WinTitle, WinText, ExcludeTitle, ExcludeText) == Text) {
@@ -336,7 +336,7 @@ ControlTextWait(Control, Text, WinTitle:="", WinText:="", ExcludeTitle:="", Excl
   }
 }
 
-ControlTextWaitChange(Control, Text:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
+ControlTextWaitChange(Control:="", Text:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
   StartTime := A_TickCount
   Loop {
     if (ControlGetText(Control, WinTitle, WinText, ExcludeTitle, ExcludeText) != Text) {
@@ -347,13 +347,12 @@ ControlTextWaitChange(Control, Text:="", WinTitle:="", WinText:="", ExcludeTitle
   }
 }
 
-ControlWaitHwndChange(Control, hWnd:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
+ControlWaitHwndChange(Control:="", hWnd:="", WinTitle:="", WinText:="", ExcludeTitle:="", ExcludeText:="", Timeout:=0) {
   hWnd := hWnd ? hWnd : ControlGet(,, Control, WinTitle, WinText, ExcludeTitle, ExcludeText)
   StartTime := A_TickCount
   Loop {
-    NewHwnd := ControlGet(,, Control, WinTitle, WinText, ExcludeTitle, ExcludeText)
-    if (NewHwnd && (NewHwnd != hWnd)) {
-      Return NewHwnd
+    if (ControlGet(,, Control, WinTitle, WinText, ExcludeTitle, ExcludeText) != hWnd) {
+      Return ControlGet(,, Control, WinTitle, WinText, ExcludeTitle, ExcludeText)
     } else if (Timeout && (A_TickCount - StartTime > Timeout)) {
       Return False
     }
@@ -1129,9 +1128,9 @@ IsWhitespaceOnly(str) {
 GetAcrobatPageBtn() {
   UIA := UIA_Interface()
   el := UIA.ElementFromHandle(WinActive("ahk_class AcrobatSDIWindow"))
-  if (!uiaAcrobatPage := el.FindFirstBy("ControlType=Edit AND Name='Page Number'"))
-    uiaAcrobatPage := el.FindFirstByName("AVQuickToolsTopBarCluster").FindByPath("+2")
-  return uiaAcrobatPage
+  if (!uiaAcrobatPageBtn := el.FindFirstBy("ControlType=Edit AND Name='Page Number'"))
+    uiaAcrobatPageBtn := el.FindFirstByName("AVQuickToolsTopBarCluster").FindByPath("+2")
+  return uiaAcrobatPageBtn
 }
 
 IsRegExChar(char) {
@@ -1331,6 +1330,8 @@ SetRemoveToolTip(time, WhichToolTip:=1) {
 }
 
 SwitchToSameWindow(w:="A") {
+  if (w == "A")
+    w := "ahk_id " . WinActive("A")
   ; Activate desktop
   ; WinActivate, ahk_class WorkerW  ; doesn't work in Win 11
   WinActivate, ahk_class Progman
@@ -1341,7 +1342,7 @@ SwitchToSameWindow(w:="A") {
 ; Originally by berban - updated February 18, 2019 - modified by Winston
 ; https://github.com/berban/Clip/blob/master/Clip.ahk
 Clip(Text:="", Reselect:=false, RestoreClip:=true, HTML:=false, KeysToSend:="", WaitTime:=-1) {
-  global WinClip
+  global WinClip, SM
   if (RestoreClip)
     ClipSaved := ClipboardAll
   If (Text = "") {
@@ -1396,4 +1397,11 @@ ParseLineBreaks(str) {
     str := StrReplace(str, "`r")
   }
   return str
+}
+
+GetSiteHTML(Url) {
+  TempPath := A_Temp . "\" . GetCurrTimeForFileName() . ".htm"
+  UrlDownloadToFile, % Url, % TempPath
+  if (!ErrorLevel)
+    return FileReadAndDelete(TempPath)
 }
