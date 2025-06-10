@@ -17,21 +17,26 @@ SM := new SM()
   ClipSaved := ClipboardAll
   KeyWait Alt
   KeyWait Ctrl
-  if (!data := Copy(false, true)) {
+  Text := Copy(false, true)
+  if ((Text = "") || (Text ~= "^\s+$")) {
+    SetToolTip("Text not found.")
     Clipboard := ClipSaved
     return
   }
-  SetToolTip("LaTeX converting...")
-  if (!IfContains(data, "<IMG")) {  ; text
+
+  if (!IfContains(Text, "<IMG")) {  ; text
+    SetToolTip("LaTeX to image converting...")
     Send {BS}^{f7}  ; set read point
     LatexFormula := Trim(ProcessLatexFormula(Clipboard), "$")
 
     ; After almost a year since I wrote this script, I finially figured out this f**ker website encodes the formula twice. Well, I suppose I don't use math that often in SM
-    ; LatexFormula := EncodeDecodeURI(EncodeDecodeURI(LatexFormula))
-    ; LatexLink := "https://latex.vimsky.com/test.image.latex.php?fmt=png&val=%255Cdpi%257B150%257D%2520%255Cbg_white%2520%255Chuge%2520" . LatexFormula . "&dl=1"
+    LatexFormula := EncodeDecodeURI(EncodeDecodeURI(LatexFormula))
+    LatexLink := "https://latex.vimsky.com/test.image.latex.php?fmt=png&val=%255Cdpi%257B150%257D%2520%255Cbg_white%2520%255Chuge%2520" . LatexFormula . "&dl=1"
 
     ; This website seems to be better? (2024-05-20)
-    LatexLink := "https://latex.codecogs.com/png.image?\dpi{300}" . LatexFormula
+    ; LatexLink := "https://latex.codecogs.com/png.image?\dpi{300}" . LatexFormula
+    ; LatexFormula := EncodeDecodeURI(LatexFormula)
+
     LatexFolderPath := SM.GetCollPath(Text := WinGetText("ahk_class TElWind"))
                      . SM.GetCollName(Text) . "\elements\LaTeX"
     LatexPath := LatexFolderPath . "\" . CurrTimeFileName . ".png"
@@ -44,7 +49,8 @@ SM := new SM()
       Send {Esc}
       SM.WaitTextExit()
     }
-    SM.SaveHTML()
+    SM.SaveHTML()  ; needed so that RefreshHTML() can find the HTML path
+    SM.RefreshHTML()
     SM.WaitHTMLFocus()
     HTML := FileRead(HTMLPath := SM.LoopForFilePath(false))
     HTML := StrReplace(HTML, LatexPlaceHolder)
@@ -73,24 +79,32 @@ SM := new SM()
       Send {Esc}
       SM.WaitTextExit()
     }
-    SM.SaveHTML()
+    SM.RefreshHTML()
     if (Item) {
       WinWaitActive, ahk_class TElWind
       Send ^+{f7}  ; clear read point
     }
 
   } else {  ; image
+    SetToolTip("Image to LaTeX converting...")
     Send {BS}  ; otherwise might contain unwanted format
-    RegExMatch(data, "alt=""(.*?)""", v)
+    RegExMatch(Text, "alt=""(.*?)""", v)
     if (!v)
-      RegExMatch(data, "alt=(.*?) ", v)
+      RegExMatch(Text, "alt=(.*?) ", v)
+    if (!v1) {
+      RegExMatch(Text, "title=""(.*?)""", v)
+      if (!v)
+        RegExMatch(Text, "title=(.*?) ", v)
+    }
     LatexFormula := EncodeDecodeURI(EncodeDecodeURI(v1, false), false)
     LatexFormula := ProcessLatexFormula(LatexFormula)
-    RegExMatch(data, "src=""(.*?)""", v)
+    RegExMatch(Text, "src=""(.*?)""", v)
     if (!v)
-      RegExMatch(data, "src=(.*?) ", v)
+      RegExMatch(Text, "src=(.*?) ", v)
     LatexPath := StrReplace(v1, "file:///")
     LatexFormula := StrReplace(LatexFormula, "&amp;", "&")
+    LatexFormula := StrReplace(LatexFormula, "&#10;", " ")
+    LatexFormula := Trim(LatexFormula, "$")  ; for websites like The Art of Problem Solving
     Clip(LatexFormula, true, false)
     FileDelete % LatexPath
   }
